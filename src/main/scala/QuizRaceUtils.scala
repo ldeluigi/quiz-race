@@ -10,7 +10,7 @@ trait QuizRaceUtils {
   val playerBetEvent: String = "PlayerBetEvent"
 
 
-  private val questionManager : QuestionManager = QuestionManager("./resources/questions")
+  private val questionManager : QuestionManager = QuestionManager("./resources/questions", "./resources/difficulties.json")
 
   def getSpecialGroup(total: Int, numSpecialTile: Int): Seq[Int] = {
     (1 until numSpecialTile).map(_ => Random.nextInt(total))
@@ -25,10 +25,10 @@ trait QuizRaceUtils {
 
   def getCategory(tile: Option[Tile]): String = ???
 
-  def getDifficulty(tile:Option[Tile]): String = ???
+  def getDifficulty(tile:Option[Tile]): Int = ???
 
   //TODO change with event
-  def getQuestion(category: String, difficulty: String, bet: Int, event: ConsumableGameEvent, gameState: GameState):
+  def getQuestion(category: String, difficulty: Int, bet: Int, event: ConsumableGameEvent, gameState: GameState):
   (String, String, Seq[(String, StepMovementEvent)]) = {
     ???
   }

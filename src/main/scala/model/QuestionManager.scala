@@ -2,6 +2,10 @@ package model
 
 import java.io.File
 
+import io.vertx.lang.scala.json.{Json, JsonArray, JsonObject}
+import model.Question.JsonQuestion
+
+import scala.io.Source
 import scala.util.Random
 
 /**
@@ -17,41 +21,56 @@ trait QuestionManager {
    * @param difficulty the difficulty chosen for the question.
    * @return a new question
    */
-  def getQuestion(category: String, difficulty: String): Question
+  def getQuestion(category: String, difficulty: Int): Question
 
   /**
    * This methods show all the categories available in this question manager.
-   * @return a Seq containing the available categories.
+   * @return a Set containing the available categories.
    */
-  def availableCategories : Seq[String]
+  def availableCategories : Set[String]
 
   /**
    * This methods show the difficulties available for every category.
-   * If some categories have different difficulties than others they will be ignored.
    * @return a Seq containing the available difficulties.
    */
-  def availableDifficulties: Seq[String]
+  def availableDifficulties: Seq[Int]
+
+  def allQuestions: Seq[Question]
 }
 
 
 object QuestionManager {
-  private class FileQuestionManager(folderPath: String) extends QuestionManager {
+  private class FileQuestionManager(folderPath: String, difficultiesPath: String) extends QuestionManager {
 
-    var questionMap: Map[(String, String), Seq[Question]] = ???
+    private val difficultiesFile = Source.fromFile(difficultiesPath)
+    private val difficulties : JsonArray = Json.fromArrayString(difficultiesFile.getLines().mkString("\n"))
+    difficultiesFile.close()
 
-    private def generateQuestionSeq : Seq[Question] = ???
+    val allQuestions: Seq[Question] = new File(folderPath).listFiles(_.isFile).toSeq.map(_.getPath).flatMap(fileName => {
+      val file = Source.fromFile(fileName)
+      val lines: String = file.getLines().mkString
+      file.close
+      val questions: JsonArray = Json.fromObjectString(lines).getJsonArray("results")
+      for (i <- 0 until questions.size) yield questions.getJsonObject(i)
+    }).map(JsonQuestion(_,difficulties))
 
-    override def getQuestion(category: String, difficulty: String): Question = {
+    var questionMap: Map[(String, Int), Seq[Question]] =
+      allQuestions.groupBy(q => (q.category, q.difficulty))
+
+    private def generateQuestionSeq(category: String, difficulty: Int) : Seq[Question] =
+      allQuestions.filter(q => q.category == category && q.difficulty == difficulty)
+
+    override def getQuestion(category: String, difficulty: Int): Question = {
       val q = questionMap((category, difficulty)).head
       if(questionMap((category, difficulty)).tail.isEmpty) {
-        questionMap += (category, difficulty) -> Random.shuffle(generateQuestionSeq)
+        questionMap += (category, difficulty) -> Random.shuffle(generateQuestionSeq(category, difficulty))
       }
       q
     }
 
-    override def availableCategories: Seq[String] = ???
+    override def availableCategories: Set[String] = questionMap.keySet.map(_._1)
 
-    override def availableDifficulties: Seq[String] = ???
+    override def availableDifficulties: Seq[Int] = questionMap.keySet.map(_._2).toSeq.sorted
   }
 
   /**
@@ -59,5 +78,5 @@ object QuestionManager {
    * @param folderPath the path of a folder with the question files
    * @return a new question manager.
    */
-  def apply(folderPath: String): QuestionManager = new FileQuestionManager(folderPath)
+  def apply(folderPath: String, difficultiesPath: String): QuestionManager = new FileQuestionManager(folderPath, difficultiesPath)
 }
