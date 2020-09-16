@@ -7,6 +7,12 @@ trait QuizRaceUtils {
 
   private val questionManager : QuestionManager = QuestionManager(???)
 
+
+  def getTileGroups(total: Int) : Map[String, Seq[Int]] = {
+    val groupSize = total / questionManager.availableCategories.size
+    ???
+  }
+
   //TODO change with event
   def getQuestion(category: String, difficulty: String, event: ConsumableGameEvent, gameState: GameState):
   (String, String, Seq[(String, GameEvent)]) = {
