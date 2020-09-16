@@ -5,7 +5,7 @@ import untitled.goose.framework.model.events.consumable.ConsumableGameEvent
 
 trait QuizRaceUtils {
 
-  private val questionManager : QuestionManager = QuestionManager(???)
+  private val questionManager : QuestionManager = QuestionManager("./resources/questions")
 
 
   def getTileGroups(total: Int) : Map[String, Seq[Int]] = {

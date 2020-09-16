@@ -1,5 +1,7 @@
 package model
 
+import java.io.File
+
 import scala.util.Random
 
 /**
@@ -33,8 +35,7 @@ trait QuestionManager {
 
 
 object QuestionManager {
-  private class FileQuestionManager(filePath: String*) extends QuestionManager {
-
+  private class FileQuestionManager(folderPath: String) extends QuestionManager {
 
     var questionMap: Map[(String, String), Seq[Question]] = ???
 
@@ -54,9 +55,9 @@ object QuestionManager {
   }
 
   /**
-   * Generate a question manager parsing the given question file.
-   * @param filePath a list of paths in the resources that identify the question files
+   * Generate a question manager parsing the question files in a folder.
+   * @param folderPath the path of a folder with the question files
    * @return a new question manager.
    */
-  def apply(filePath: String*): QuestionManager = new FileQuestionManager(filePath:_*)
+  def apply(folderPath: String): QuestionManager = new FileQuestionManager(folderPath)
 }
