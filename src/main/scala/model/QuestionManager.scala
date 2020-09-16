@@ -1,6 +1,6 @@
 package model
 
-import untitled.goose.framework.model.events.GameEvent
+import scala.util.Random
 
 /**
  * This trait represent an interface to ask questions of a specific category to a question manager
@@ -35,7 +35,18 @@ trait QuestionManager {
 object QuestionManager {
   private class FileQuestionManager(filePath: String*) extends QuestionManager {
 
-    override def getQuestion(category: String, difficulty: String): Question = ???
+
+    var questionMap: Map[(String, String), Seq[Question]] = ???
+
+    private def generateQuestionSeq : Seq[Question] = ???
+
+    override def getQuestion(category: String, difficulty: String): Question = {
+      val q = questionMap((category, difficulty)).head
+      if(questionMap((category, difficulty)).tail.isEmpty) {
+        questionMap += (category, difficulty) -> Random.shuffle(generateQuestionSeq)
+      }
+      q
+    }
 
     override def availableCategories: Seq[String] = ???
 
