@@ -1,5 +1,6 @@
 import model.QuestionManager
 import scalafx.scene.paint.Color
+import untitled.goose.framework.model.Colour
 import untitled.goose.framework.model.entities.runtime.{GameState, Tile}
 import untitled.goose.framework.model.events.CustomPlayerEvent
 import untitled.goose.framework.model.events.consumable.StepMovementEvent
@@ -11,14 +12,14 @@ trait QuizRaceUtils {
   val specialGroup = "SpecialGroup"
   val playerBetEvent: String = "PlayerBetEvent"
 
-
-  private val questionManager: QuestionManager = QuestionManager("./resources/questions", "./resources/difficulties.json")
+  private val questionManager: QuestionManager = QuestionManager("./resources/easyquestions", "./resources/difficulties.json")
+  private val orderedCategories: Seq[String] = questionManager.availableCategories.toList
 
   def getSpecialGroup(total: Int, numSpecialTile: Int): Seq[Int] =
     (1 until numSpecialTile).map(_ => Random.nextInt(total))
 
   def getTileGroups(total: Int): Map[String, Seq[Int]] = {
-    val categories = questionManager.availableCategories.toArray
+    val categories = orderedCategories
     (1 to total)
       .map(i => i % categories.length -> i)
       .map(e => categories(e._1)-> e._2)
@@ -26,8 +27,12 @@ trait QuizRaceUtils {
       .map(e => e._1 -> e._2.map(_._2))
   }
 
+  def getCategoryColor(category: String): Colour ={
+    Colour.Default.colours(orderedCategories.indexOf(category))
+  }
 
-  def getCategoryColor(category: String): Color = Color.Red
+
+
   /**
    * Return the category of this tile, a random one if none present
    *
@@ -36,8 +41,8 @@ trait QuizRaceUtils {
    */
   def getCategory(tile: Option[Tile]): String = {
     val groups: Seq[String] = tile.map(_.definition.groups).getOrElse(Seq())
-    val categories = groups.intersect(questionManager.availableCategories.toSeq)
-    if (categories.nonEmpty) categories.head else Random.shuffle(questionManager.availableCategories).head
+    val categories = groups.intersect(orderedCategories)
+    if (categories.nonEmpty) categories.head else Random.shuffle(orderedCategories).head
   }
 
   def getDifficulty(tile: Option[Tile]): Int = questionManager.availableDifficulties.head //TODO tile dependent?

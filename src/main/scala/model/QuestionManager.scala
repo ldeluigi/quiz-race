@@ -55,16 +55,17 @@ object QuestionManager {
     }).map(JsonQuestion(_,difficulties))
 
     var questionMap: Map[(String, Int), Seq[Question]] =
-      allQuestions.groupBy(q => (q.category, q.difficulty))
+      allQuestions.groupBy(q => (q.category, q.difficulty)).map(q => (q._1, Random.shuffle(q._2)))
 
     private def generateQuestionSeq(category: String, difficulty: Int) : Seq[Question] =
       allQuestions.filter(q => q.category == category && q.difficulty == difficulty)
 
     override def getQuestion(category: String, difficulty: Int): Question = {
       val q = questionMap((category, difficulty)).head
-      questionMap += (category, difficulty) -> questionMap(category, difficulty).tail
       if(questionMap((category, difficulty)).tail.isEmpty) {
         questionMap += (category, difficulty) -> Random.shuffle(generateQuestionSeq(category, difficulty))
+      } else {
+        questionMap += (category, difficulty) -> questionMap(category, difficulty).tail
       }
       q
     }

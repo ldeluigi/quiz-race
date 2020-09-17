@@ -16,7 +16,7 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
 
   getTileGroups(52).foreach(e => {
     The tiles (e._2: _*) have group(e._1)
-    All tiles e._1 have color(getCategoryColor(e._1))
+    All tiles e._1 have colour(getCategoryColor(e._1))
   })
 
   The tiles (getSpecialGroup(52, 7): _*) have group(specialGroup)
