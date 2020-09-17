@@ -62,6 +62,7 @@ object QuestionManager {
 
     override def getQuestion(category: String, difficulty: Int): Question = {
       val q = questionMap((category, difficulty)).head
+      questionMap += (category, difficulty) -> questionMap(category, difficulty).tail
       if(questionMap((category, difficulty)).tail.isEmpty) {
         questionMap += (category, difficulty) -> Random.shuffle(generateQuestionSeq(category, difficulty))
       }
