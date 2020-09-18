@@ -14,13 +14,9 @@ trait QuizRaceUtils {
   val special = "special"
   val colours = Seq(
     Colour("#FFC107"),
-    Colour("#FF5722"),
     Colour("#D32F2F"),
     Colour("#8BC34A"),
-    Colour("#00897B"),
-    Colour("#00BCD4"),
-    Colour("#673AB7"),
-    Colour("#B39DDB")
+    Colour("#00BCD4")
   )
 
   val displayBetMenu: String = "DisplayBetMenu"

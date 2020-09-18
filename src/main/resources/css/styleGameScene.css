@@ -1,0 +1,42 @@
+.root {
+    -fx-background-image: url("./background.jpg");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+.button {
+    -fx-border-radius: 2;
+    -fx-background-color: White;
+    -fx-text-fill: #206020;
+    -fx-border-color: #206020;
+}
+
+.container {
+    -fx-background-color: #00BCD4
+}
+
+.currentPlayerName {
+    -fx-font: bold 20pt "Arial";
+}
+
+.rectangle {
+    -fx-stroke: black;
+    -fx-stroke-width: 4;
+}
+
+.tileLabel {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-family: Arial;
+}
+
+.pieceShape {
+    -fx-stroke: black;
+    -fx-stroke-width: 2;
+}
+
+.button{
+    -fx-background-color: #8BC34A;
+    -fx-border-radius: 0;
+}
