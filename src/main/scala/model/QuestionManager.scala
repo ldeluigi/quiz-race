@@ -70,9 +70,11 @@ object QuestionManager {
     private def generateQuestionSeq(category: String, difficulty: Int): Seq[Question] =
       allQuestions.filter(q => q.category == category && q.difficulty == difficulty)
 
-    override def getQuestion(category: String, difficulty: Int): Question =
-      questionMap((category, difficulty)).head
-
+    override def getQuestion(category: String, difficulty: Int): Question = {
+      val q = questionMap((category, difficulty)).head
+      burnQuestion(category, difficulty)
+      q
+    }
 
     override def availableCategories: Set[String] = questionMap.keySet.map(_._1)
 

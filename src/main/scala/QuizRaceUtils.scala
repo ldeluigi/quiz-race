@@ -9,7 +9,7 @@ import scala.util.Random
 
 trait QuizRaceUtils {
 
-  val boardSize: Int = 52
+  val boardSize: Int = 32
 
   val special = "special"
   val colours = Seq(
@@ -31,7 +31,7 @@ trait QuizRaceUtils {
   private val orderedCategories: Seq[String] = questionManager.availableCategories.toList
 
   def getSpecialGroup(total: Int, numSpecialTile: Int): Seq[Int] =
-    (1 until numSpecialTile).map(_ => Random.nextInt(total))
+    (1 until numSpecialTile).map(_ => Random.nextInt(total-1)+2)
 
   def tileGroups(total: Int): Map[String, Seq[Int]] = {
     val categories = orderedCategories
@@ -65,7 +65,6 @@ trait QuizRaceUtils {
   def getQuestion(e: CustomPlayerEvent, s: GameState): (String, String, Seq[(String, GameEvent)]) = {
     val currentTile = s.playerPieces(e.player).position.map(_.tile)
     val q = questionManager.getQuestion(getCategory(currentTile), e.getProperty[Int]("difficulty").get)
-    questionManager.burnQuestion(getCategory(currentTile), e.getProperty[Int]("difficulty").get)
     val options = q.options.map(o => (o._1, PlayerScoreEvent((if (o._2) 1 else -1) * e.getProperty[Int]("bet").get, s.currentPlayer, s.currentTurn, s.currentCycle))).toSeq
     (q.title, q.text, options)
   }

@@ -51,17 +51,6 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
     ))
     ) andThen consume
 
-  //Display the bet menu for common tiles
-  when(!isOnSpecialTile(_)) and numberOf(events[CustomGameEvent] matching (e => e.name == displayBetMenu)) is (_ > 0) resolve (
-    forEach displayCustomQuestion((e, s) => ("Place a bet", "Choose how many steps you want to bet"),
-      ((e, s) => "1", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 1) :+ ("difficulty", (e, s) => easy)),
-      ((e, s) => "2", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 2) :+ ("difficulty", (e, s) => easy)),
-      ((e, s) => "3", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 3) :+ ("difficulty", (e, s) => easy)),
-      ((e, s) => "4", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 4) :+ ("difficulty", (e, s) => easy)),
-      ((e, s) => "5", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 5) :+ ("difficulty", (e, s) => easy))
-    )
-    ) andThen consume
-
   //display the bet menu for hard tiles
   when(isOnSpecialTile) and numberOf(events[CustomGameEvent] matching (e => e.name == displayBetMenu)) is (_ > 0) resolve (
     forEach displayCustomQuestion((e, s) => ("Place a bet", "Choose how many steps you want to bet"),
@@ -69,6 +58,17 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
       ((e, s) => "5", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 5) :+ ("difficulty", (e, s) => hard)),
       ((e, s) => "10", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 10) :+ ("difficulty", (e, s) => hard)),
       ((e, s) => "15", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 15) :+ ("difficulty", (e, s) => hard))
+    )
+    ) andThen consume
+
+  //Display the bet menu for common tiles
+  always when numberOf(events[CustomGameEvent] matching (e => e.name == displayBetMenu)) is (_ > 0) resolve (
+    forEach displayCustomQuestion((e, s) => ("Place a bet", "Choose how many steps you want to bet"),
+      ((e, s) => "1", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 1) :+ ("difficulty", (e, s) => easy)),
+      ((e, s) => "2", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 2) :+ ("difficulty", (e, s) => easy)),
+      ((e, s) => "3", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 3) :+ ("difficulty", (e, s) => easy)),
+      ((e, s) => "4", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 4) :+ ("difficulty", (e, s) => easy)),
+      ((e, s) => "5", playerEvent[CustomGameEvent](playerBetEvent, _.currentPlayer) :+ ("bet", (e, s) => 5) :+ ("difficulty", (e, s) => easy))
     )
     ) andThen consume
 
@@ -83,10 +83,15 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
     forEach displayQuestion ((e, s) => getQuestion(e, s))
     ) andThen consume
 
+  //on special tiles you cannot go backwards but you could stay stuck
+  when(isOnSpecialTile) and numberOf(events[PlayerScoreEvent] matching (_ => true)) is (_ > 0) resolve (
+    forEach trigger ((e, s) => StepMovementEvent(if(e.score < 0) 0 else e.score, e.player, s.currentTurn, s.currentCycle))
+  ) andThen consume && save
+
+
   always when numberOf(events[PlayerScoreEvent] matching (_ => true)) is (_ > 0) resolve (
     forEach trigger ((e, s) => StepMovementEvent(e.score, e.player, s.currentTurn, s.currentCycle))
     ) andThen consume && save
-
 
   Include these system behaviours(
     MultipleStep,
