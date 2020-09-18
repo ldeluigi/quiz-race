@@ -1,6 +1,7 @@
 package model
 
 import io.vertx.lang.scala.json.{JsonArray, JsonObject}
+import org.apache.commons.text.StringEscapeUtils
 
 trait Question {
   def category: String
@@ -26,12 +27,12 @@ object Question {
 
     override def title: String = category + " question!"
 
-    override def text: String = jsonObject.getString("question")
+    override def text: String = StringEscapeUtils.unescapeHtml4(jsonObject.getString("question"))
 
     override def options: Map[String, Boolean] = {
-      val correct : String = jsonObject.getString("correct_answer")
+      val correct : String = StringEscapeUtils.unescapeHtml4(jsonObject.getString("correct_answer"))
       val array = jsonObject.getJsonArray("incorrect_answers")
-      val incorrect: Seq[String] = for(i <- 0 until array.size) yield array.getString(i)
+      val incorrect: Seq[String] = for(i <- 0 until array.size) yield StringEscapeUtils.unescapeHtml4(array.getString(i))
       incorrect.map(s => (s, false)).toMap + (correct -> true)
     }
   }

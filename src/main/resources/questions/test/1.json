@@ -1,0 +1,11 @@
+{
+    "response_code": 0,
+    "results": [{
+        "category": "Deloo",
+        "type": "multiple",
+        "difficulty": "easy",
+        "question": "Is this an easy question?",
+        "correct_answer": "Yes",
+        "incorrect_answers": ["No"]
+    }]
+}
