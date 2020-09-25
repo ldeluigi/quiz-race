@@ -1,9 +1,9 @@
 import model.events.PlayerScoreEvent
 import untitled.goose.framework.dsl.GooseDSL
 import untitled.goose.framework.dsl.board.words.DispositionType.Ring
+import untitled.goose.framework.model.entities.definitions.PlayerOrderingType.Fixed
 import untitled.goose.framework.model.events.consumable.{StepMovementEvent, TileEnteredEvent}
 import untitled.goose.framework.model.events.{CustomGameEvent, CustomPlayerEvent}
-import untitled.goose.framework.model.rules.ruleset.PlayerOrderingType.Fixed
 
 object QuizRace extends GooseDSL with QuizRaceUtils {
 
