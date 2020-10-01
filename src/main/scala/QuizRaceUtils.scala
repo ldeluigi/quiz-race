@@ -75,5 +75,5 @@ trait QuizRaceUtils extends GooseDSLPrologExtension {
   //def isOnSpecialTile(s: GameState): Boolean = s.playerPieces(s.currentPlayer).position.exists(_.tile.definition.belongsTo(special))
 
   val isOnSpecialTile: GameState => Boolean =
-    state2p(s"currentPlayer(P), owns(P, piece(position(tile(_, _, G)), _)), member('$special}', G).")
+    state2p(s"currentPlayer(P), owns(P, piece(position(tile(_, _, G)), _)), member('$special', G).")
 }
