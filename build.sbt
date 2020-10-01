@@ -10,6 +10,8 @@ libraryDependencies += "org.scalafx" %% "scalafx" % "14-R19"
 
 libraryDependencies += "org.apache.commons" % "commons-text" % "1.9"
 
+libraryDependencies += "it.unibo.alice.tuprolog" % "2p-core" % "4.1.1"
+
 // Determine OS version of JavaFX binaries
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"

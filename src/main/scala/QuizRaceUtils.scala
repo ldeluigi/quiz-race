@@ -1,5 +1,6 @@
 import model.QuestionManager
 import model.events.PlayerScoreEvent
+import untitled.goose.framework.dsl.prolog.GooseDSLPrologExtension
 import untitled.goose.framework.model.Colour
 import untitled.goose.framework.model.entities.runtime.GameStateExtensions._
 import untitled.goose.framework.model.entities.runtime.{GameState, Player, Tile}
@@ -7,7 +8,7 @@ import untitled.goose.framework.model.events.{CustomPlayerEvent, GameEvent}
 
 import scala.util.Random
 
-trait QuizRaceUtils {
+trait QuizRaceUtils extends GooseDSLPrologExtension {
 
   val boardSize: Int = 32
 
@@ -71,5 +72,8 @@ trait QuizRaceUtils {
   }
 
 
-  def isOnSpecialTile(s: GameState): Boolean = s.playerPieces(s.currentPlayer).position.exists(_.tile.definition.belongsTo(special))
+  //def isOnSpecialTile(s: GameState): Boolean = s.playerPieces(s.currentPlayer).position.exists(_.tile.definition.belongsTo(special))
+
+  val isOnSpecialTile: GameState => Boolean =
+    state2p(s"currentPlayer(P), owns(P, piece(position(tile(_, _, G)), _)), member('$special}', G).")
 }
