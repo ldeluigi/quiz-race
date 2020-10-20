@@ -1,8 +1,9 @@
 import model.QuestionManager
 import model.events.PlayerScoreEvent
 import untitled.goose.framework.model.Colour
-import untitled.goose.framework.model.entities.runtime.GameStateExtensions._
-import untitled.goose.framework.model.entities.runtime.{GameState, Player, Tile}
+import untitled.goose.framework.model.entities.definitions.TileDefinition
+import untitled.goose.framework.model.entities.runtime.functional.HistoryExtensions.PimpedHistory
+import untitled.goose.framework.model.entities.runtime.{GameState, Player}
 import untitled.goose.framework.model.events.{CustomPlayerEvent, GameEvent}
 
 import scala.util.Random
@@ -48,8 +49,8 @@ trait QuizRaceUtils {
    * @param tile an option containing a tile
    * @return the category of this tile
    */
-  def getCategory(tile: Option[Tile]): String = {
-    val groups: Seq[String] = tile.map(_.definition.groups).getOrElse(Seq())
+  def getCategory(tile: Option[TileDefinition]): String = {
+    val groups: Seq[String] = tile.map(_.groups).getOrElse(Seq())
     val categories = groups.intersect(orderedCategories)
     if (categories.nonEmpty) categories.head else Random.shuffle(orderedCategories).head
   }
@@ -71,5 +72,5 @@ trait QuizRaceUtils {
   }
 
 
-  def isOnSpecialTile(s: GameState): Boolean = s.playerPieces(s.currentPlayer).position.exists(_.tile.definition.belongsTo(special))
+  def isOnSpecialTile(s: GameState): Boolean = s.playerPieces(s.currentPlayer).position.exists(_.tile.belongsTo(special))
 }

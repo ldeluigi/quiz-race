@@ -44,7 +44,7 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
 
   always when numberOf(events[CustomGameEvent] matching (e => e.name == displayScore)) is (_ > 0) resolve (
     forEach displayMessage ((_, s) => ("Current score",
-      "" + s.players.map(p => (p.name, currentScore(p)))
+      "" + s.players.keys.map(p => (p.name, currentScore(s.players(p)))).toList
         .sortBy(p => p._2)
         .map(p => p._1 + "\t" + p._2 + " points")
         .mkString("\n")
@@ -74,7 +74,7 @@ object QuizRace extends GooseDSL with QuizRaceUtils {
 
   //The first to reach the last tile is the winner!
   always when numberOf(events[TileEnteredEvent] matching
-    (e => e.tile.definition.name.isDefined && e.tile.definition.name.get == "The end")) is (_ > 0) resolve
+    (e => e.tile.name.isDefined && e.tile.name.get == "The end")) is (_ > 0) resolve
     trigger((_, s) => Victory(s)) andThen consume
 
   //When a bet is placed show a question based on the tile on which the player is standing.
